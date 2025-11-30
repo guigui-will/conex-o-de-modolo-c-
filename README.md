@@ -6,27 +6,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #ffffff; --card: #000000; --text: rgb(255, 255, 255); --accent: #000000; --muted: #9ca3af;
+      --bg: #ffffff;
+      --card: #000000;
+      --text: rgb(255, 255, 255);
+      --accent: #000000;
+      --muted: #9ca3af;
     }
-    body { background: var(--bg); color: var(--text); font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; margin: 0; padding: 2rem; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      margin: 0;
+      padding: 2rem;
+    }
+
     .container { max-width: 760px; margin: 0 auto; }
     .card { background: var(--card); border: 1px solid #1f2937; border-radius: 12px; padding: 1.25rem; }
     h1 { margin: 0 0 1rem; font-size: 1.5rem; }
-    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem; }
-    label { font-size: 0.9rem; color: var(--muted); display: block; margin-bottom: 0.25rem; }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 0.75rem;
+    }
+
+    label {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
     input[type="text"], input[type="number"] {
-      width: 100%; padding: 0.6rem 0.7rem; border-radius: 8px; border: 1px solid #374151; background: #0b1220; color: var(--text);
+      width: 100%;
+      padding: 0.6rem 0.7rem;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #0b1220;
+      color: var(--text);
     }
+
     input[type="file"] { width: 100%; }
+
     button {
-      background: var(--accent); color: #0b1220; border: none; border-radius: 10px; padding: 0.7rem 1rem; font-weight: 600; cursor: pointer;
+      background: var(--accent);
+      color: #0b1220;
+      border: none;
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      font-weight: 600;
+      cursor: pointer;
     }
+
     button:disabled { opacity: 0.6; cursor: not-allowed; }
+
     .progress-wrap { margin-top: 1rem; }
-    .progress-bar {
-      height: 12px; background: #1f2937; border-radius: 999px; overflow: hidden;
-    }
+    .progress-bar { height: 12px; background: #1f2937; border-radius: 999px; overflow: hidden; }
     .progress { height: 100%; width: 0%; background: linear-gradient(90deg, #22d3ee, #38bdf8); transition: width 0.15s ease; }
+
     .status { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
     .log { margin-top: 1rem; font-size: 0.9rem; white-space: pre-wrap; background: #0b1220; padding: 0.75rem; border-radius: 8px; border: 1px solid #1f2937; }
   </style>
@@ -61,7 +100,9 @@
       <button id="sendBtn">Enviar arquivo</button>
 
       <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress" id="progress"></div></div>
+        <div class="progress-bar">
+          <div class="progress" id="progress"></div>
+        </div>
         <div class="status" id="status">Aguardando envio...</div>
       </div>
 
@@ -92,18 +133,27 @@
     async function upload() {
       const file = fileInput.files[0];
       const base = serverInput.value.trim().replace(/\/+$/, '');
-      const endpoint = endpointInput.value.trim().startsWith('/') ? endpointInput.value.trim() : '/' + endpointInput.value.trim();
+      const endpoint = endpointInput.value.trim().startsWith('/')
+        ? endpointInput.value.trim()
+        : '/' + endpointInput.value.trim();
       const url = `${base}${endpoint}`;
 
-      if (!file) { alert('Selecione um arquivo.'); return; }
-      sendBtn.disabled = true; setProgress(0); statusEl.textContent = 'Iniciando...'; log('Preparando envio.');
+      if (!file) {
+        alert('Selecione um arquivo.');
+        return;
+      }
 
-      // Usando XMLHttpRequest para progresso granular
+      sendBtn.disabled = true;
+      setProgress(0);
+      statusEl.textContent = 'Iniciando...';
+      log('Preparando envio.');
+
       const form = new FormData();
       form.append('file', file, file.name);
 
       const xhr = new XMLHttpRequest();
       xhr.open('POST', url, true);
+
       if (tokenInput.value.trim()) {
         xhr.setRequestHeader('X-Auth-Token', tokenInput.value.trim());
       }
